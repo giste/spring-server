@@ -316,9 +316,9 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 		verify(repository).save(entityCaptor.capture());
 
 		// Check that entity passed to repository matches the id and is enabled.
-		ENT capturedClub = entityCaptor.getValue();
-		assertThat(capturedClub.getId(), is(disabledEntity.getId()));
-		assertThat(capturedClub.isEnabled(), is(true));
+		ENT capturedEntity = entityCaptor.getValue();
+		assertThat(capturedEntity.getId(), is(disabledEntity.getId()));
+		assertThat(capturedEntity.isEnabled(), is(true));
 
 		// Check that read DTO has the correct id and is enabled.
 		assertThat(readDto.getId(), is(enabledEntity.getId()));
