@@ -1,11 +1,14 @@
 package org.giste.spring.server.entity;
 
+import javax.persistence.MappedSuperclass;
+
 /**
  * Represents an entity that can't be removed because of its dependencies.
  * Instead, the entity can be enabled or disabled.
  * 
  * @author Giste
  */
+@MappedSuperclass
 public class NonRemovableEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 2703602042485715754L;
