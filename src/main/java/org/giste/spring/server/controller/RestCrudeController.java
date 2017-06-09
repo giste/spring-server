@@ -40,7 +40,8 @@ public abstract class RestCrudeController<T extends NonRemovableDto> {
 	 * Creates a new Entity.
 	 * 
 	 * @param dto {@link NonRemovableDto} with values for new entity.
-	 * @return {@link NonRemovableDto} with the values of the new created entity.
+	 * @return {@link NonRemovableDto} with the values of the new created
+	 *         entity.
 	 */
 	@PostMapping
 	public T create(@RequestBody @Valid final T dto) {
@@ -62,7 +63,8 @@ public abstract class RestCrudeController<T extends NonRemovableDto> {
 	/**
 	 * Retrieves all existing entities.
 	 * 
-	 * @return List populated with the {@link NonRemovableDto} of all existent entities.
+	 * @return List populated with the {@link NonRemovableDto} of all existent
+	 *         entities.
 	 */
 	@GetMapping
 	public List<T> findAll() {
@@ -73,7 +75,8 @@ public abstract class RestCrudeController<T extends NonRemovableDto> {
 	 * Updates one entity.
 	 * 
 	 * @param id Identifier of the entity to be updated.
-	 * @param dto {@link NonRemovableDto} with the values of the entity to update.
+	 * @param dto {@link NonRemovableDto} with the values of the entity to
+	 *            update.
 	 * @return {@link NonRemovableDto} with the updated values of the entity.
 	 * @throws EntityNotFoundException If the entity to update can't be found.
 	 */

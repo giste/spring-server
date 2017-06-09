@@ -9,7 +9,7 @@ package org.giste.spring.server.service.exception;
 public class EntityNotFoundException extends RestException {
 
 	private static final long serialVersionUID = 629573734793213907L;
-	
+
 	private Object id;
 
 	/**

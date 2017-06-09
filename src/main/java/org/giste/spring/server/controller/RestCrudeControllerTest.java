@@ -65,7 +65,7 @@ public abstract class RestCrudeControllerTest<DTO extends NonRemovableDto> {
 	}
 
 	protected abstract CrudeService<DTO> getService();
-	
+
 	protected abstract MockMvc getMockMvc();
 
 	protected abstract DTO getNewDto();
@@ -280,7 +280,7 @@ public abstract class RestCrudeControllerTest<DTO extends NonRemovableDto> {
 				.contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
-		
+
 		checkExpectedProperties(result, dto);
 
 		verify(service).disable(dto.getId());

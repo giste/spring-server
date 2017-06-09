@@ -21,14 +21,14 @@ public interface CrudeRepository<T extends NonRemovableEntity> extends Repositor
 	 * @return The found entity or null.
 	 */
 	T findOne(Long id);
-	
+
 	/**
 	 * Finds all entities.
 	 * 
 	 * @return Iterable with all existing entities.
 	 */
 	Iterable<T> findAll();
-	
+
 	/**
 	 * Saves (creates or updates) one entity.
 	 * 
