@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.giste.spring.server.entity.NonRemovableEntity;
 import org.giste.spring.server.repository.CrudeRepository;
@@ -152,7 +153,7 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 	@Test
 	public void findByIdIsValid() {
 		ENT entity = getNewEntity();
-		when(repository.findOne(1L)).thenReturn(entity);
+		when(repository.findOne(1L)).thenReturn(Optional.of(entity));
 
 		DTO dto = service.findById(entity.getId());
 
@@ -168,7 +169,7 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 	 */
 	@Test
 	public void findByIdEntityNotFound() {
-		when(repository.findOne(anyLong())).thenReturn(null);
+		when(repository.findOne(anyLong())).thenReturn(Optional.ofNullable(null));
 
 		try {
 			service.findById(1L);
@@ -232,7 +233,7 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 		ENT entity = getNewEntity();
 		DTO dto = service.getDtoFromEntity(entity);
 
-		when(repository.findOne(dto.getId())).thenReturn(entity);
+		when(repository.findOne(dto.getId())).thenReturn(Optional.of(entity));
 		when(repository.save(any(entityType))).thenReturn(entity);
 
 		DTO readDto = service.update(dto);
@@ -258,7 +259,7 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 	public void updateEntityNotFound() {
 		ENT entity = getNewEntity();
 		DTO dto = service.getDtoFromEntity(entity);
-		when(repository.findOne(dto.getId())).thenReturn(null);
+		when(repository.findOne(dto.getId())).thenReturn(Optional.ofNullable(null));
 
 		try {
 			service.update(dto);
@@ -288,7 +289,7 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 		enabledEntity.setId(disabledEntity.getId());
 		enabledEntity.setEnabled(true);
 
-		when(repository.findOne(disabledEntity.getId())).thenReturn(disabledEntity);
+		when(repository.findOne(disabledEntity.getId())).thenReturn(Optional.of(disabledEntity));
 		when(repository.save(any(entityType))).thenReturn(enabledEntity);
 
 		DTO readDto = service.enable(disabledEntity.getId());
@@ -314,7 +315,7 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 	@Test
 	public void enableEntityNotFound() {
 		final Long id = 1L;
-		when(repository.findOne(id)).thenReturn(null);
+		when(repository.findOne(id)).thenReturn(Optional.ofNullable(null));
 
 		try {
 			service.enable(id);
@@ -345,7 +346,7 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 		disabledEntity.setId(enabledEntity.getId());
 		disabledEntity.setEnabled(false);
 
-		when(repository.findOne(enabledEntity.getId())).thenReturn(enabledEntity);
+		when(repository.findOne(enabledEntity.getId())).thenReturn(Optional.of(enabledEntity));
 		when(repository.save(any(entityType))).thenReturn(disabledEntity);
 
 		DTO readDto = service.disable(enabledEntity.getId());
@@ -372,7 +373,7 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 	@Test
 	public void disableEntityNotFound() throws Exception {
 		final Long id = 1L;
-		when(repository.findOne(id)).thenReturn(null);
+		when(repository.findOne(id)).thenReturn(Optional.ofNullable(null));
 
 		try {
 			service.disable(id);

@@ -1,5 +1,7 @@
 package org.giste.spring.server.repository;
 
+import java.util.Optional;
+
 import org.giste.spring.server.entity.NonRemovableEntity;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
@@ -20,7 +22,7 @@ public interface CrudeRepository<T extends NonRemovableEntity> extends Repositor
 	 * @param id The identifier.
 	 * @return The found entity or null.
 	 */
-	T findOne(Long id);
+	Optional<T> findOne(Long id);
 
 	/**
 	 * Finds all entities.

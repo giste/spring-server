@@ -1,6 +1,7 @@
 package org.giste.spring.server.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -107,12 +108,13 @@ public abstract class CrudeServiceImpl<DTO extends NonRemovableDto, ENT extends 
 	 * @throws EntityNotFoundException If the entity can't be found.
 	 */
 	private ENT getSafeEntity(Long id) throws EntityNotFoundException {
-		ENT entity = repository.findOne(id);
-		if (entity == null) {
+		Optional<ENT> entity = repository.findOne(id);
+		
+		if(entity.isPresent()) {
+			return entity.get();
+		} else {
 			LOGGER.debug("Throwing EntityNotFoundException");
 			throw getEntityNotFoundException(id);
-		} else {
-			return entity;
 		}
 	}
 
