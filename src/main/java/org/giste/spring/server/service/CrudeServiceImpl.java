@@ -6,7 +6,6 @@ import java.util.stream.StreamSupport;
 
 import org.giste.spring.server.entity.NonRemovableEntity;
 import org.giste.spring.server.repository.CrudeRepository;
-import org.giste.spring.server.service.exception.DuplicatedPropertyException;
 import org.giste.spring.server.service.exception.EntityNotFoundException;
 import org.giste.util.dto.NonRemovableDto;
 import org.slf4j.Logger;
@@ -42,9 +41,6 @@ public abstract class CrudeServiceImpl<DTO extends NonRemovableDto, ENT extends 
 
 	@Override
 	public DTO create(DTO dto) {
-		// Check for duplicated values in 'unique' properties.
-		checkDuplicatedProperties(dto);
-
 		// Get and save entity.
 		ENT entity = getEntityFromDto(dto);
 		ENT savedEntity = repository.save(entity);
@@ -69,9 +65,6 @@ public abstract class CrudeServiceImpl<DTO extends NonRemovableDto, ENT extends 
 
 	@Override
 	public DTO update(DTO dto) throws EntityNotFoundException {
-		// Check for duplicated values in 'unique' properties.
-		checkDuplicatedProperties(dto);
-
 		// Find entity to update.
 		ENT entity = getSafeEntity(dto.getId());
 		// Update entity.
@@ -159,15 +152,8 @@ public abstract class CrudeServiceImpl<DTO extends NonRemovableDto, ENT extends 
 	 */
 	protected abstract EntityNotFoundException getEntityNotFoundException(Long id);
 
-	/**
-	 * This method is called in create and update methods in order to allow
-	 * subclasses to check if the DTO has violations to unique properties. It
-	 * has to be implemented looking for single entities with findBy... methods
-	 * and throwing {@link DuplicatedPropertyException} filled with proper
-	 * information from concrete service.
-	 * 
-	 * @param dto DTO to check.
-	 * @throws DuplicatedPropertyException If some property is duplicated.
-	 */
-	protected abstract void checkDuplicatedProperties(DTO dto) throws DuplicatedPropertyException;
+	protected CrudeRepository<ENT> getRepository() {
+		return repository;
+	}
+
 }

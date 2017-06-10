@@ -5,11 +5,13 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.giste.spring.server.service.CrudeService;
+import org.giste.spring.server.service.exception.DuplicatedPropertyException;
 import org.giste.spring.server.service.exception.EntityNotFoundException;
 import org.giste.util.dto.BaseDto;
 import org.giste.util.dto.NonRemovableDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +47,11 @@ public abstract class RestCrudeController<T extends NonRemovableDto> {
 	 */
 	@PostMapping
 	public T create(@RequestBody @Valid final T dto) {
-		return service.create(dto);
+		try {
+			return service.create(dto);
+		} catch (DataIntegrityViolationException e) {
+			throw getDuplicatedPropertyException(dto);
+		}
 	}
 
 	/**
@@ -89,7 +95,11 @@ public abstract class RestCrudeController<T extends NonRemovableDto> {
 			dto.setId(id);
 		}
 
-		return service.update(dto);
+		try {
+			return service.update(dto);
+		} catch (DataIntegrityViolationException e) {
+			throw getDuplicatedPropertyException(dto);
+		}
 	}
 
 	/**
@@ -116,4 +126,5 @@ public abstract class RestCrudeController<T extends NonRemovableDto> {
 		return service.disable(id);
 	}
 
+	protected abstract DuplicatedPropertyException getDuplicatedPropertyException(T dto);
 }

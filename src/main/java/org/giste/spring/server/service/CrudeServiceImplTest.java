@@ -99,17 +99,6 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 	}
 
 	/**
-	 * Allow subclasses to verify that findBy...() methods are called in
-	 * repository when the service checks for duplicated properties before
-	 * creating or updating one entity.
-	 * 
-	 * @param dto The DTO to check.
-	 */
-	protected void verifyDuplicatedProperties(DTO dto) {
-
-	}
-
-	/**
 	 * Test for findAll() method. It asks subclass for two entities, changes
 	 * their identifiers to 1L and 2L respectively and put them in a list.
 	 * Checks that the returned DTO list has two items and call subclass
@@ -211,9 +200,6 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 
 		DTO readDto = service.create(dto);
 
-		// Allow subclass to verify calls to repository.findBy...() methods.
-		verifyDuplicatedProperties(dto);
-
 		// Verify call to repository.create().
 		ArgumentCaptor<ENT> entityCaptor = ArgumentCaptor.forClass(entityType);
 		verify(repository).save(entityCaptor.capture());
@@ -251,9 +237,6 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 
 		DTO readDto = service.update(dto);
 
-		// Allow subclass to verify calls to repository.findBy...() methods.
-		verifyDuplicatedProperties(dto);
-
 		ArgumentCaptor<ENT> entityCaptor = ArgumentCaptor.forClass(entityType);
 		verify(repository).findOne(dto.getId());
 		verify(repository).save(entityCaptor.capture());
@@ -285,7 +268,6 @@ public abstract class CrudeServiceImplTest<DTO extends NonRemovableDto, ENT exte
 			assertThat(e.getId(), is(dto.getId()));
 		}
 
-		verifyDuplicatedProperties(dto);
 		verify(repository).findOne(dto.getId());
 		verifyNoMoreInteractions(repository);
 	}
