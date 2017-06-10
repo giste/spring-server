@@ -52,4 +52,9 @@ public class NonRemovableEntity extends BaseEntity {
 		this.enabled = enabled;
 	}
 
+	@Override
+	public String toString() {
+		return "NonRemovableEntity [id=" + getId() + ", enabled=" + enabled + "]";
+	}
+
 }
