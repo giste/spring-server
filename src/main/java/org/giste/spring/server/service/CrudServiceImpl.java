@@ -5,30 +5,31 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.giste.spring.server.entity.BaseEntity;
 import org.giste.spring.server.entity.NonRemovableEntity;
-import org.giste.spring.server.repository.CrudeRepository;
+import org.giste.spring.server.repository.CrudRepository;
 import org.giste.spring.server.service.exception.EntityNotFoundException;
+import org.giste.util.dto.BaseDto;
 import org.giste.util.dto.NonRemovableDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract base implementation for a service with CRUDE operations (Create,
- * Read, Update, Disable, Enable). Services of this type should subclass this
- * one and implement the abstract methods for mapping between the entity and the
- * DTO.
+ * Abstract base implementation for a service with CRUD operations (Create,
+ * Read, Update, Delete). Services of this type should subclass this one and
+ * implement the abstract methods for mapping between the entity and the DTO.
  * 
  * @author Giste
  *
  * @param <DTO> DTO class for objects returned by this service.
  * @param <ENT> Entity class managed by this service.
  */
-public abstract class CrudeServiceImpl<DTO extends NonRemovableDto, ENT extends NonRemovableEntity>
-		implements CrudeService<DTO> {
+public abstract class CrudServiceImpl<DTO extends BaseDto, ENT extends BaseEntity>
+		implements CrudService<DTO> {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-	protected CrudeRepository<ENT> repository;
+	protected CrudRepository<ENT> repository;
 
 	/**
 	 * Constructs a new CrudeService with the repository to use for managing the
@@ -36,7 +37,7 @@ public abstract class CrudeServiceImpl<DTO extends NonRemovableDto, ENT extends 
 	 * 
 	 * @param repository The repository to use to persist the entity.
 	 */
-	public CrudeServiceImpl(CrudeRepository<ENT> repository) {
+	public CrudServiceImpl(CrudRepository<ENT> repository) {
 		this.repository = repository;
 	}
 
@@ -76,27 +77,12 @@ public abstract class CrudeServiceImpl<DTO extends NonRemovableDto, ENT extends 
 	}
 
 	@Override
-	public DTO enable(Long id) throws EntityNotFoundException {
-		// Find entity to enable.
-		ENT entity = getSafeEntity(id);
-
-		// Enable entity.
-		entity.setEnabled(true);
-		ENT savedEntity = repository.save(entity);
-
-		return getDtoFromEntity(savedEntity);
-	}
-
-	@Override
-	public DTO disable(Long id) throws EntityNotFoundException {
+	public void delete(Long id) throws EntityNotFoundException {
 		// Find entity to disable.
 		ENT entity = getSafeEntity(id);
 
-		// Disable entity.
-		entity.setEnabled(false);
-		ENT savedEntity = repository.save(entity);
-
-		return getDtoFromEntity(savedEntity);
+		// Delete entity.
+		repository.delete(entity);
 	}
 
 	/**
@@ -109,8 +95,8 @@ public abstract class CrudeServiceImpl<DTO extends NonRemovableDto, ENT extends 
 	 */
 	private ENT getSafeEntity(Long id) throws EntityNotFoundException {
 		Optional<ENT> entity = repository.findOne(id);
-		
-		if(entity.isPresent()) {
+
+		if (entity.isPresent()) {
 			return entity.get();
 		} else {
 			LOGGER.debug("Throwing EntityNotFoundException");
@@ -159,7 +145,7 @@ public abstract class CrudeServiceImpl<DTO extends NonRemovableDto, ENT extends 
 	 * 
 	 * @return The repository used by this service.
 	 */
-	protected CrudeRepository<ENT> getRepository() {
+	protected CrudRepository<ENT> getRepository() {
 		return repository;
 	}
 

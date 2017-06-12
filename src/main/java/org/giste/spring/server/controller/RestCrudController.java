@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.giste.spring.server.service.CrudeService;
+import org.giste.spring.server.service.CrudService;
 import org.giste.spring.server.service.exception.DuplicatedPropertyException;
 import org.giste.spring.server.service.exception.EntityNotFoundException;
 import org.giste.util.dto.BaseDto;
@@ -12,6 +12,7 @@ import org.giste.util.dto.NonRemovableDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * Superclass for all the CRUDE controllers. Provide methods to create, read,
- * update, disable and enable the given entity. Entity has to be a subclass of
+ * Superclass for all the CRUD controllers. Provide methods to create, read,
+ * update and delete the given entity. Entity has to be a subclass of
  * {@link NonRemovableDto}.
  * 
  * @author Giste
@@ -28,13 +29,18 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @param <T> {@link NonRemovableDto} of the entity to be managed by the
  *            controller.
  */
-public abstract class RestCrudeController<T extends NonRemovableDto> {
+public abstract class RestCrudController<T extends BaseDto> {
 
 	final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-	protected final CrudeService<T> service;
+	protected final CrudService<T> service;
 
-	public RestCrudeController(CrudeService<T> service) {
+	/**
+	 * Constructs a new controller.
+	 * 
+	 * @param service Service to be used by the controller.
+	 */
+	public RestCrudController(CrudService<T> service) {
 		this.service = service;
 	}
 
@@ -103,32 +109,20 @@ public abstract class RestCrudeController<T extends NonRemovableDto> {
 	}
 
 	/**
-	 * Enables one entity in the application.
-	 * 
-	 * @param id Identifier of the entity to enable.
-	 * @return {@link NonRemovableDto} with the values of the enabled entity.
-	 * @throws EntityNotFoundException If the entity to enable can't be found.
-	 */
-	@PutMapping("/{id}/enable")
-	public T enable(@PathVariable("id") Long id) throws EntityNotFoundException {
-		return service.enable(id);
-	}
-
-	/**
 	 * Disables one entity in the application.
 	 * 
 	 * @param id Identifier of the entity to disable.
 	 * @return {@link BaseDto} with the values of the disabled entity.
 	 * @throws EntityNotFoundException If the entity to disable can't be found
 	 */
-	@PutMapping("/{id}/disable")
-	public T disable(@PathVariable("id") Long id) throws EntityNotFoundException {
-		return service.disable(id);
+	@DeleteMapping("/{id}")
+	public void delete(@PathVariable("id") Long id) throws EntityNotFoundException {
+		service.delete(id);
 	}
 
 	/**
-	 * Gets the exception to be thrown if a duplicated property is found
-	 * when creating or updating.
+	 * Gets the exception to be thrown if a duplicated property is found when
+	 * creating or updating.
 	 * 
 	 * @param dto The DTO that caused the exception.
 	 * @return The exception to be thrown.

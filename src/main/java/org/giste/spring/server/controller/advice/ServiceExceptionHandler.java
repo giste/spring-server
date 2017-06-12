@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Giste
  */
 @ControllerAdvice
-public class CrudeServiceExceptionHandler {
+public class ServiceExceptionHandler {
 
 	/**
 	 * Handles {@link EntityNotFoundException} and converts it in
