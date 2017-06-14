@@ -1,10 +1,7 @@
 package org.giste.spring.server.repository;
 
-import java.util.Optional;
-
 import org.giste.spring.server.entity.NonRemovableEntity;
 import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.data.repository.Repository;
 
 /**
  * Base repository for CRUDE (Create, Read, Update, Disable, Enable) operations.
@@ -14,28 +11,6 @@ import org.springframework.data.repository.Repository;
  * @param <T> NonRemovableEntity to manage.
  */
 @NoRepositoryBean
-public interface CrudeRepository<T extends NonRemovableEntity> extends Repository<T, Long> {
+public interface CrudeRepository<T extends NonRemovableEntity> extends BaseRepository<T> {
 
-	/**
-	 * Gets one entity given its identifier.
-	 * 
-	 * @param id The identifier.
-	 * @return The found entity or null.
-	 */
-	Optional<T> findOne(Long id);
-
-	/**
-	 * Finds all entities.
-	 * 
-	 * @return Iterable with all existing entities.
-	 */
-	Iterable<T> findAll();
-
-	/**
-	 * Saves (creates or updates) one entity.
-	 * 
-	 * @param entity The entity to save.
-	 * @return The saved entity.
-	 */
-	T save(T entity);
 }
