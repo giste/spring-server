@@ -33,7 +33,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class RestCrudControllerTest<DTO extends BaseDto> {
+public abstract class CrudRestControllerTest<DTO extends BaseDto> {
 	// URIs.
 	private String basePath;
 	private String pathId;

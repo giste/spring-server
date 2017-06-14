@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class RestCrudeControllerTest<DTO extends NonRemovableDto> {
+public abstract class CrudeRestControllerTest<DTO extends NonRemovableDto> {
 	// URIs.
 	private String basePath;
 	private String pathId;

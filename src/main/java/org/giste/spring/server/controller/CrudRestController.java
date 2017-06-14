@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @param <T> {@link NonRemovableDto} of the entity to be managed by the
  *            controller.
  */
-public abstract class RestCrudController<T extends BaseDto> {
+public abstract class CrudRestController<T extends BaseDto> {
 
 	final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
@@ -40,7 +40,7 @@ public abstract class RestCrudController<T extends BaseDto> {
 	 * 
 	 * @param service Service to be used by the controller.
 	 */
-	public RestCrudController(CrudService<T> service) {
+	public CrudRestController(CrudService<T> service) {
 		this.service = service;
 	}
 
