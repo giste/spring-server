@@ -1,5 +1,6 @@
 package org.giste.spring.server.controller;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -8,9 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.giste.spring.util.error.dto.FieldErrorDto;
 import org.giste.spring.util.error.dto.RestErrorDto;
 import org.giste.util.dto.BaseDto;
-import org.giste.util.dto.NonRemovableDto;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,14 +105,6 @@ public abstract class BaseRestControllerIntegrationTest<DTO extends BaseDto> {
 	protected abstract DTO getUpdatedDto(DTO dto);
 
 	/**
-	 * Gets the number of invalid properties of the DTO returned in
-	 * {@link #getInvalidDto(NonRemovableDto)}.
-	 * 
-	 * @return The number of invalid properties.
-	 */
-	protected abstract int getInvalidProperties();
-
-	/**
 	 * Gets the type of the DTO under testing.
 	 * 
 	 * @return The type of the DTO under testing.
@@ -138,6 +132,15 @@ public abstract class BaseRestControllerIntegrationTest<DTO extends BaseDto> {
 	 * @return The error code returned in <code>RestErrorDto</code>.
 	 */
 	protected abstract String getNotFoundErrorCode();
+
+	/**
+	 * Gets the list of invalid properties for testing. The list has to contain
+	 * the field names of the properties put in invalid state by
+	 * {@link #getInvalidDto(BaseDto)}.
+	 * 
+	 * @return The list of invalid properties.
+	 */
+	protected abstract List<String> getInvalidFields();
 
 	@Before
 	public void setUp() {
@@ -199,7 +202,7 @@ public abstract class BaseRestControllerIntegrationTest<DTO extends BaseDto> {
 		RestErrorDto restError = restTemplate.postForObject(getPathBase(), dto,
 				RestErrorDto.class);
 
-		assertThat(restError.getFieldErrorList().size(), is(getInvalidProperties()));
+		checkInvalidProperties(restError.getFieldErrorList(), getInvalidFields());
 	}
 
 	@Test
@@ -219,7 +222,7 @@ public abstract class BaseRestControllerIntegrationTest<DTO extends BaseDto> {
 		RestErrorDto restError = restTemplate.exchange(getPathId(), HttpMethod.PUT, new HttpEntity<>(dto),
 				RestErrorDto.class, dto.getId()).getBody();
 
-		assertThat(restError.getFieldErrorList().size(), is(getInvalidProperties()));
+		checkInvalidProperties(restError.getFieldErrorList(), getInvalidFields());
 	}
 
 	@Test
@@ -234,4 +237,12 @@ public abstract class BaseRestControllerIntegrationTest<DTO extends BaseDto> {
 		assertThat(restError.getCode(), is(getNotFoundErrorCode()));
 	}
 
+	private void checkInvalidProperties(List<FieldErrorDto> errorFieldList, List<String> invalidFieldList) {
+
+		assertThat(errorFieldList.size(), is(invalidFieldList.size()));
+
+		for (String field : invalidFieldList) {
+			assertThat(errorFieldList, hasItem(Matchers.<FieldErrorDto>hasProperty("field", is(field))));
+		}
+	}
 }

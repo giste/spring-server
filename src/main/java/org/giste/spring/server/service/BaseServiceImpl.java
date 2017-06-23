@@ -47,7 +47,7 @@ public abstract class BaseServiceImpl<DTO extends BaseDto, ENT extends BaseEntit
 		ENT savedEntity = repository.save(entity);
 
 		LOGGER.debug("Created {}", savedEntity);
-		
+
 		return getDtoFromEntity(savedEntity);
 	}
 
@@ -56,7 +56,7 @@ public abstract class BaseServiceImpl<DTO extends BaseDto, ENT extends BaseEntit
 		ENT entity = getSafeEntity(id);
 
 		LOGGER.debug("Found {}", entity);
-		
+
 		return getDtoFromEntity(entity);
 	}
 
@@ -74,7 +74,7 @@ public abstract class BaseServiceImpl<DTO extends BaseDto, ENT extends BaseEntit
 		ENT savedEntity = repository.save(entity);
 
 		LOGGER.debug("Updated {}", savedEntity);
-		
+
 		return getDtoFromEntity(savedEntity);
 	}
 
@@ -93,7 +93,7 @@ public abstract class BaseServiceImpl<DTO extends BaseDto, ENT extends BaseEntit
 			return entity.get();
 		} else {
 			LOGGER.debug("Throwing EntityNotFoundException {}", id);
-			
+
 			throw getEntityNotFoundException(id);
 		}
 	}

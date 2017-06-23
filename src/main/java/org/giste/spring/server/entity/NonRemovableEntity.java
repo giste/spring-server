@@ -14,7 +14,7 @@ public class NonRemovableEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 2703602042485715754L;
 
-	@Column(name="enabled", nullable=false)
+	@Column(name = "enabled", nullable = false)
 	protected boolean enabled;
 
 	/**
