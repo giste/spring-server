@@ -21,7 +21,7 @@ public abstract class BaseEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", nullable = false, updatable = false)
-	private Long id;
+	protected Long id;
 
 	/**
 	 * Creates a BaseEntity without identifier.
