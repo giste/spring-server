@@ -3,6 +3,10 @@ package org.giste.spring.server.controller;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.giste.spring.util.error.dto.RestErrorDto;
 import org.giste.util.dto.NonRemovableDto;
 import org.junit.Before;
@@ -58,8 +62,8 @@ public abstract class CrudeRestControllerIntegrationTest<DTO extends NonRemovabl
 	public void enableIsValid() {
 		DTO dto = getDisabledDto();
 
-		DTO readDto = getRestTemplate().exchange(getPathEnable(), HttpMethod.PUT, new HttpEntity<>(dto),
-				getDtoType(), dto.getId()).getBody();
+		DTO readDto = getRestTemplate()
+				.exchange(getPathEnable(), HttpMethod.PUT, new HttpEntity<>(dto), getDtoType(), dto.getId()).getBody();
 
 		dto.setEnabled(true);
 
@@ -71,8 +75,9 @@ public abstract class CrudeRestControllerIntegrationTest<DTO extends NonRemovabl
 		DTO dto = getDisabledDto();
 		dto.setId(100L);
 
-		RestErrorDto restError = getRestTemplate().exchange(getPathEnable(), HttpMethod.PUT, new HttpEntity<>(dto),
-				RestErrorDto.class, dto.getId()).getBody();
+		RestErrorDto restError = getRestTemplate()
+				.exchange(getPathEnable(), HttpMethod.PUT, new HttpEntity<>(dto), RestErrorDto.class, dto.getId())
+				.getBody();
 
 		assertThat(restError.getStatus(), is(HttpStatus.NOT_FOUND));
 		assertThat(restError.getCode(), is(getNotFoundErrorCode()));
@@ -82,8 +87,8 @@ public abstract class CrudeRestControllerIntegrationTest<DTO extends NonRemovabl
 	public void disableIsValid() {
 		DTO dto = getEnabledDto();
 
-		DTO readDto = getRestTemplate().exchange(getPathDisable(), HttpMethod.PUT, new HttpEntity<>(dto),
-				getDtoType(), dto.getId()).getBody();
+		DTO readDto = getRestTemplate()
+				.exchange(getPathDisable(), HttpMethod.PUT, new HttpEntity<>(dto), getDtoType(), dto.getId()).getBody();
 
 		dto.setEnabled(false);
 
@@ -95,11 +100,29 @@ public abstract class CrudeRestControllerIntegrationTest<DTO extends NonRemovabl
 		DTO dto = getEnabledDto();
 		dto.setId(100L);
 
-		RestErrorDto restError = getRestTemplate().exchange(getPathDisable(), HttpMethod.PUT, new HttpEntity<>(dto),
-				RestErrorDto.class, dto.getId()).getBody();
+		RestErrorDto restError = getRestTemplate()
+				.exchange(getPathDisable(), HttpMethod.PUT, new HttpEntity<>(dto), RestErrorDto.class, dto.getId())
+				.getBody();
 
 		assertThat(restError.getStatus(), is(HttpStatus.NOT_FOUND));
 		assertThat(restError.getCode(), is(getNotFoundErrorCode()));
+	}
+
+	@Override
+	public void findAll() {
+		// Get all items.
+		List<DTO> readDtoList = Arrays.stream(getRestTemplate().getForObject(getPathBase(), getArrayType()))
+				.collect(Collectors.toList());
+
+		// Get enabled items.
+		List<DTO> enabledDtoList = getDtoList().stream().filter(t -> t.isEnabled()).collect(Collectors.toList());
+
+		// Check list size.
+		assertThat(readDtoList.size(), is(enabledDtoList.size()));
+
+		for (int i = 0; i < readDtoList.size(); i++) {
+			checkDto(readDtoList.get(i), enabledDtoList.get(i), true);
+		}
 	}
 
 }

@@ -1,5 +1,9 @@
 package org.giste.spring.server.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.giste.spring.server.entity.NonRemovableEntity;
 import org.giste.spring.server.repository.CrudeRepository;
 import org.giste.spring.server.service.exception.EntityNotFoundException;
@@ -59,6 +63,21 @@ public abstract class CrudeServiceImpl<DTO extends NonRemovableDto, ENT extends 
 	@Override
 	protected CrudeRepository<ENT> getRepository() {
 		return (CrudeRepository<ENT>) super.getRepository();
+	}
+
+	protected void delete(Long id) {
+		ENT entity = getSafeEntity(id);
+		entity.setEnabled(false);
+		getRepository().save(entity);
+
+		LOGGER.debug("Disabled entity {}", entity);
+	}
+
+	@Override
+	public List<DTO> findAll() {
+		return StreamSupport.stream(getRepository().findAllByEnabledIsTrue().spliterator(), false)
+				.map(entity -> getDtoFromEntity(entity))
+				.collect(Collectors.toList());
 	}
 
 }

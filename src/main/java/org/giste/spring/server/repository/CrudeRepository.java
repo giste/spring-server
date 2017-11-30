@@ -13,4 +13,6 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface CrudeRepository<T extends NonRemovableEntity> extends BaseRepository<T> {
 
+	// TODO Return only enabled entities
+	Iterable<T> findAllByEnabledIsTrue();
 }
