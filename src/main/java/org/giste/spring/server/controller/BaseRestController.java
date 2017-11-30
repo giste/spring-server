@@ -12,6 +12,7 @@ import org.giste.util.dto.NonRemovableDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -95,9 +96,11 @@ public abstract class BaseRestController<DTO extends BaseDto> {
 	 * @param dto DTO with the values of the entity to update.
 	 * @return DTO with the updated values of the entity.
 	 * @throws EntityNotFoundException If the entity to update can't be found.
+	 * @throws HttpRequestMethodNotSupportedException
 	 */
 	@PutMapping(value = "/{id}")
-	public DTO update(@PathVariable("id") Long id, @RequestBody @Valid final DTO dto) throws EntityNotFoundException {
+	public DTO update(@PathVariable("id") Long id, @RequestBody @Valid final DTO dto)
+			throws EntityNotFoundException, HttpRequestMethodNotSupportedException {
 
 		// If club identifier is different, overwrite it.
 		if (id != dto.getId()) {
